@@ -1,0 +1,42 @@
+characters:
+ - id integer not null primary key
+ - name string not null
+ - amount_life integer not null
+ - amount_strength integer not null
+ - amount_agility integer not null
+
+weapons:
+ - id integer not null primary key
+ - name string not null
+ - amount_attack integer not null
+ - amount_defense integer not null
+ - amount_damage integer not null
+
+character_weapon:
+ - id integer integer not null primary key
+ - id_character integer not null
+ - id_weapon integer not null
+
+rounds:
+ - id integer not null primary key
+ - name string not null
+ - round_number integer not null
+
+turn:
+ - id integer not null primary key
+ - id_round integer not null
+ - turn_number integer not null
+
+turn_characters:
+ - id integer not null primary key
+ - id_character integer not null
+ - id_turn integer not null
+
+turn_rounds:
+ - id integer not null primary key
+ - id_turn integer not null
+ - id_character_striker integer not null
+ - id_character_defender integer not null
+ - type smallint not null (iniciativa, ataque, dano)
+ - damage double
+ - amount_life integer
