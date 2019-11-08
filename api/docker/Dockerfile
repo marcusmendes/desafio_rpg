@@ -59,13 +59,13 @@ RUN touch /root/.ssh/know_hosts
 # RUN ssh-keyscan bitbucket.org >> /root/.ssh/known_hosts
 
 # Clone Project
-RUN git clone --branch ${default_branch} ${git_repository} /var/www/html/api
+RUN git clone --branch ${default_branch} ${git_repository} /var/www/html/project
 
 # BUILD
-WORKDIR /var/www/html/api
-RUN mkdir /var/www/html/api/var
-RUN chmod -R 777 /var/www/html/api/var
-COPY ./.env /var/www/html/api/
-RUN composer install --no-interaction --prefer-dist
+WORKDIR /var/www/html/project/api
+RUN mkdir /var/www/html/project/api/var
+RUN chmod -R 777 /var/www/html/project/api/var
+COPY ./.env /var/www/html/project/api
+RUN composer install --no-interaction
 
 EXPOSE 8000
