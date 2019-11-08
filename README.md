@@ -10,7 +10,7 @@
 - Composer
     - Veja como instalar [aqui](https://getcomposer.org/download/)
 
-### Como inicializar o projeto
+#### Como inicializar o projeto
 
 Todas as dependências necessarias para executar os projetos já estão devidamente instaladas nos containers.
 
