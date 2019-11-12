@@ -2,9 +2,11 @@
 
 namespace App\Controller;
 
+use App\Exceptions\ApiException;
 use App\Services\RPGService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Class RPGController
@@ -30,9 +32,21 @@ class RPGController extends AbstractController
      * Inicia a rodada
      *
      * @return JsonResponse
+     * @throws ApiException
      */
     public function startRound(): JsonResponse
     {
         return $this->json($this->RPGService->startRound());
+    }
+
+    /**
+     * Inicia o turno
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function turn(Request $request): JsonResponse
+    {
+        return $this->json($this->RPGService->startTurn($request));
     }
 }

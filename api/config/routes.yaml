@@ -8,3 +8,8 @@ start_round:
   path: /start
   controller: App\Controller\RPGController::startRound
   methods: GET
+
+turn:
+  path: /turn
+  controller: App\Controller\RPGController::turn
+  methods: POST
