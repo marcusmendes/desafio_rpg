@@ -29,6 +29,7 @@
         "symfony/yaml": "4.3.*"
     },
     "require-dev": {
+        "liip/test-fixtures-bundle": "^1.0.0",
         "phpunit/phpunit": "^8",
         "squizlabs/php_codesniffer": "*",
         "symfony/debug-pack": "*",

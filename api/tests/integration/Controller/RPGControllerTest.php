@@ -3,34 +3,23 @@
 namespace App\Tests\integration\Controller;
 
 use App\DataFixtures\CharacterFixtures;
-use Symfony\Bundle\FrameworkBundle\KernelBrowser;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use App\Tests\ApiTestCase;
+use Liip\TestFixturesBundle\Test\FixturesTrait;
 
 /**
  * Class RPGControllerTest
  * @package App\Tests\integration\Controller
  */
-class RPGControllerTest extends WebTestCase
+class RPGControllerTest extends ApiTestCase
 {
-    /**
-     * @var KernelBrowser $client
-     */
-    private $client;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->client = static::createClient();
-        $container = $this->client->getContainer();
-        $doctrine = $container->get('doctrine');
-        $entityManager = $doctrine->getManager();
-
-        $characterFixture = new CharacterFixtures();
-        $characterFixture->load($entityManager);
-    }
+    use FixturesTrait;
 
     public function testDeveRetornarOsPersonagensDoRPG()
     {
+        $this->loadFixtures([
+            CharacterFixtures::class
+        ]);
+
         $this->client->request('GET', '/start');
         $response = $this->client->getResponse();
 
