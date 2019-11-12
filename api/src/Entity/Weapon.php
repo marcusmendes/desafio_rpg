@@ -132,4 +132,20 @@ class Weapon
 
         return $this;
     }
+
+    /**
+     * Transforma o objeto em array
+     *
+     * @return array
+     */
+    public function toArray(): array
+    {
+        return [
+            'id'            => $this->id,
+            'name'          => $this->name,
+            'amountAttack'  => $this->amountAttack,
+            'amountDefense' => $this->amountDefense,
+            'amountDamage'  => $this->amountDamage
+        ];
+    }
 }

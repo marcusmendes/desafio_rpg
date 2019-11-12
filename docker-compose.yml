@@ -5,13 +5,18 @@ services:
       context: api/docker
       args: 
         git_repository: git@github.com:marcusmendes/desafio_rpg.git
-        default_branch: master
+        default_branch: develop
     ports:
       - 8000:80
     depends_on: 
       - database
       - database_test
-    command: bash -c "git pull && composer install --no-interaction && bin/console doctrine:migrations:migrate && service php7.2-fpm start && nginx -g 'daemon off;'"
+    command: bash -c "git pull &&
+      composer install --no-interaction --no-scripts &&
+      bin/console doctrine:migrations:migrate &&
+      bin/console doctrine:fixtures:load --purge-with-truncate &&
+      service php7.2-fpm start &&
+      nginx -g 'daemon off;'"
   
   database:
     image: postgres:latest
@@ -20,7 +25,7 @@ services:
       POSTGRES_PASSWORD: docker
       POSTGRES_DB: desafio_rpg
     depends_on:
-      - adminer
+      - pgadmin
     ports:
       - 5432:5432 
   
@@ -31,11 +36,14 @@ services:
       POSTGRES_PASSWORD: docker
       POSTGRES_DB: test 
     depends_on:
-      - adminer
+      - pgadmin
     ports:
       - 5434:5432
 
-  adminer:
-    image: adminer
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: test@test.com
+      PGADMIN_DEFAULT_PASSWORD: 123456
     ports:
-      - 8080:8080
+      - 8080:80

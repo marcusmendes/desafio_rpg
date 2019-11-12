@@ -7,6 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\CharacterRepository")
  * @ORM\Table(schema="public", name="characters")
+ * @ORM\EntityListeners({"App\Listeners\CharacterListener"})
  */
 class Character
 {
@@ -41,6 +42,11 @@ class Character
      * @ORM\OneToOne(targetEntity="App\Entity\CharacterWeapon", mappedBy="character", cascade={"persist", "remove"})
      */
     private $characterWeapon;
+
+    /**
+     * @ORM\Column(type="integer", name="unique_id")
+     */
+    private $uniqueId;
 
     public function getId(): ?int
     {
@@ -110,5 +116,34 @@ class Character
         }
 
         return $this;
+    }
+
+    public function getUniqueId(): ?int
+    {
+        return $this->uniqueId;
+    }
+
+    public function setUniqueId(int $uniqueId): self
+    {
+        $this->uniqueId = $uniqueId;
+
+        return $this;
+    }
+
+    /**
+     * Transforma o objeto em um array
+     *
+     * @return array
+     */
+    public function toArray(): array
+    {
+        return [
+            'uniqueId'          => $this->uniqueId,
+            'name'              => $this->name,
+            'amountLife'        => $this->amountLife,
+            'amountStrength'    => $this->amountStrength,
+            'amountAgility'     => $this->amountAgility,
+            'weapon'            => $this->getCharacterWeapon()->getWeapon()->toArray()
+        ];
     }
 }
