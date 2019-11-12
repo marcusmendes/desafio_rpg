@@ -1,6 +1,6 @@
 server {
     server_name _;
-    root /var/www/html/api/public;
+    root /var/www/html/project/api/public;
 
     location / {
         try_files $uri /index.php$is_args$args;
