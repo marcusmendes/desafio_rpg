@@ -33,8 +33,8 @@ class RPGService
      */
     public function startRound(): array
     {
-        $human = $this->getCharacter(1000);
-        $orc = $this->getCharacter(1001);
+        $human = $this->getCharacter('c_humano');
+        $orc = $this->getCharacter('c_orc');
 
         return [
             'human' => $human !== null ? $human->toArray() : [],
@@ -45,10 +45,10 @@ class RPGService
     /**
      * Retorna o personagem pelo unique_id
      *
-     * @param integer $uniqueId O Id unico do personagem
+     * @param string $uniqueId O Id unico do personagem
      * @return Character|null
      */
-    private function getCharacter(int $uniqueId): ?Character
+    private function getCharacter(string $uniqueId): ?Character
     {
         $characters = $this
             ->entityManager

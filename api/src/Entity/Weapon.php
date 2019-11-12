@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\WeaponRepository")
  * @ORM\Table(schema="public", name="weapons")
+ * @ORM\EntityListeners({"App\Listeners\WeaponListener"})
  */
 class Weapon
 {
@@ -43,6 +44,11 @@ class Weapon
      * @ORM\OneToMany(targetEntity="App\Entity\CharacterWeapon", mappedBy="weapon")
      */
     private $weaponsCharacter;
+
+    /**
+     * @ORM\Column(type="string", name="unique_id")
+     */
+    private $uniqueId;
 
     public function __construct()
     {
@@ -102,6 +108,18 @@ class Weapon
         return $this;
     }
 
+    public function getUniqueId(): ?string
+    {
+        return $this->uniqueId;
+    }
+
+    public function setUniqueId(string $uniqueId): self
+    {
+        $this->uniqueId = $uniqueId;
+
+        return $this;
+    }
+
     /**
      * @return Collection|CharacterWeapon[]
      */
@@ -141,7 +159,7 @@ class Weapon
     public function toArray(): array
     {
         return [
-            'id'            => $this->id,
+            'uniqueId'      => $this->uniqueId,
             'name'          => $this->name,
             'amountAttack'  => $this->amountAttack,
             'amountDefense' => $this->amountDefense,

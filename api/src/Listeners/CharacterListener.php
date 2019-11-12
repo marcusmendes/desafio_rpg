@@ -20,23 +20,10 @@ class CharacterListener
      *
      * @param Character $character
      * @param LifecycleEventArgs $event
-     * @throws ApiException
      */
     public function prePersistHandler(Character $character, LifecycleEventArgs $event)
     {
-        try {
-            $lastUniqueId = $event
-                ->getEntityManager()
-                ->getRepository(Character::class)
-                ->findLastUniqueId();
-
-            if ($lastUniqueId !== null) {
-                $character->setUniqueId($lastUniqueId->getUniqueId() + 1);
-            } else {
-                $character->setUniqueId(1000);
-            }
-        } catch (NonUniqueResultException $e) {
-            throw new ApiException($e->getMessage());
-        }
+        $uniqueId = sprintf("c_%s", str_replace('', '_', strtolower($character->getName())));
+        $character->setUniqueId($uniqueId);
     }
 }

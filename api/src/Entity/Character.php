@@ -44,7 +44,7 @@ class Character
     private $characterWeapon;
 
     /**
-     * @ORM\Column(type="integer", name="unique_id")
+     * @ORM\Column(type="string", name="unique_id")
      */
     private $uniqueId;
 
@@ -118,12 +118,12 @@ class Character
         return $this;
     }
 
-    public function getUniqueId(): ?int
+    public function getUniqueId(): ?string
     {
         return $this->uniqueId;
     }
 
-    public function setUniqueId(int $uniqueId): self
+    public function setUniqueId(string $uniqueId): self
     {
         $this->uniqueId = $uniqueId;
 
