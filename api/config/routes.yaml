@@ -3,6 +3,10 @@ index:
   controller: App\Controller\DefaultController::index
   methods: GET
 
+apidoc:
+  path: /apidoc
+  controller: App\Controller\DefaultController::apidoc
+
 # RPG
 start_round:
   path: /start

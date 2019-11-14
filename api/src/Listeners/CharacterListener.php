@@ -23,7 +23,7 @@ class CharacterListener
      */
     public function prePersistHandler(Character $character, LifecycleEventArgs $event)
     {
-        $uniqueId = sprintf("c_%s", str_replace('', '_', strtolower($character->getName())));
+        $uniqueId = sprintf("c_%s", str_replace(' ', '_', strtolower($character->getName())));
         $character->setUniqueId($uniqueId);
     }
 }

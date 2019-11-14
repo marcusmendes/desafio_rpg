@@ -1,0 +1,286 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "API Desafio RPG",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:8000"
+        }
+    ],
+    "paths": {
+        "/": {
+            "get": {
+                "summary": "Rotão padrão do projeto",
+                "description": "Rotão padrão do projeto",
+                "operationId": "App\\Controller\\DefaultController::index",
+                "responses": {
+                    "200": {
+                        "description": "sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "description": "Metodo retornado pelo rota padrao",
+                                            "type": "string",
+                                            "example": "API desafio RPG"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/start": {
+            "get": {
+                "summary": "Inicia a rodada",
+                "description": "Rota utilizada para iniciar a rodada",
+                "operationId": "App\\Controller\\RPGController::startRound",
+                "responses": {
+                    "200": {
+                        "description": "Cria a rodada e retorna os personagens",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "round": {
+                                            "$ref": "#/components/schemas/Round"
+                                        },
+                                        "characters": {
+                                            "description": "Inicia a rodada",
+                                            "properties": {
+                                                "human": {
+                                                    "$ref": "#/components/schemas/Character"
+                                                },
+                                                "orc": {
+                                                    "$ref": "#/components/schemas/Character"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/turn": {
+            "post": {
+                "summary": "Inicia o turno da rodada",
+                "description": "Rota utilizada para iniciar o turno de uma rodada",
+                "operationId": "App\\Controller\\RPGController::turn",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "round": {
+                                        "description": "Inicia o turno",
+                                        "properties": {
+                                            "idRound": {
+                                                "description": "Inicia o turno",
+                                                "type": "integer",
+                                                "example": "1"
+                                            },
+                                            "number": {
+                                                "description": "Inicia o turno",
+                                                "type": "integer",
+                                                "example": "1"
+                                            },
+                                            "characters": {
+                                                "description": "Inicia o turno",
+                                                "properties": {
+                                                    "human": {
+                                                        "description": "Inicia o turno",
+                                                        "properties": {
+                                                            "uniqueId": {
+                                                                "description": "Inicia o turno",
+                                                                "type": "string",
+                                                                "example": "c_humano"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    },
+                                                    "orc": {
+                                                        "description": "Inicia o turno",
+                                                        "properties": {
+                                                            "uniqueId": {
+                                                                "description": "Inicia o turno",
+                                                                "type": "string",
+                                                                "example": "c_orc"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        },
+                                        "type": "object"
+                                    },
+                                    "turn": {
+                                        "description": "Inicia o turno",
+                                        "properties": {
+                                            "step": {
+                                                "description": "Inicia o turno",
+                                                "type": "string",
+                                                "example": "ATTACK"
+                                            },
+                                            "striker_uniqueId": {
+                                                "description": "Inicia o turno",
+                                                "type": "string",
+                                                "example": "c_humano"
+                                            },
+                                            "defender_uniqueId": {
+                                                "description": "Inicia o turno",
+                                                "type": "string",
+                                                "example": "c_orc"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Retorna os dados do turno",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "step": {
+                                            "description": "Inicia o turno",
+                                            "type": "string",
+                                            "example": "ATTACK"
+                                        },
+                                        "turnRound": {
+                                            "description": "Inicia o turno",
+                                            "properties": {
+                                                "round": {
+                                                    "$ref": "#/components/schemas/Round"
+                                                },
+                                                "characterStriker": {
+                                                    "$ref": "#/components/schemas/Character"
+                                                },
+                                                "characterDefender": {
+                                                    "$ref": "#/components/schemas/Character"
+                                                },
+                                                "amountLifeStriker": {
+                                                    "description": "Inicia o turno",
+                                                    "type": "integer",
+                                                    "example": "12"
+                                                },
+                                                "amountLifeDefender": {
+                                                    "description": "Inicia o turno",
+                                                    "type": "integer",
+                                                    "example": "20"
+                                                },
+                                                "damage": {
+                                                    "description": "Inicia o turno",
+                                                    "type": "integer",
+                                                    "example": "5"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Character": {
+                "title": "Character",
+                "properties": {
+                    "uniqueId": {
+                        "type": "srting",
+                        "example": "c_humano"
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Humano"
+                    },
+                    "amountLife": {
+                        "type": "integer",
+                        "example": "20"
+                    },
+                    "amountStrength": {
+                        "type": "integer",
+                        "example": "2"
+                    },
+                    "amountAgility": {
+                        "type": "integer",
+                        "example": "1"
+                    },
+                    "weapon": {
+                        "$ref": "#/components/schemas/Weapon"
+                    }
+                },
+                "type": "object"
+            },
+            "Round": {
+                "title": "Round",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": "1"
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Rodada 1"
+                    },
+                    "roundNumber": {
+                        "type": "integer",
+                        "example": "1"
+                    }
+                },
+                "type": "object"
+            },
+            "Weapon": {
+                "title": "Weapon",
+                "properties": {
+                    "uniqueId": {
+                        "type": "string",
+                        "example": "w_clava_de_madeira"
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Espada Longa"
+                    },
+                    "amountAttack": {
+                        "type": "integer",
+                        "example": "2"
+                    },
+                    "amountDefense": {
+                        "type": "integer",
+                        "example": "1"
+                    },
+                    "amountDamage": {
+                        "type": "integer",
+                        "example": "3"
+                    }
+                },
+                "type": "object"
+            }
+        }
+    }
+}

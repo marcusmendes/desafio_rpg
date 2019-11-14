@@ -3,11 +3,14 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use OpenApi\Annotations\Property;
+use OpenApi\Annotations\Schema;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\CharacterRepository")
  * @ORM\Table(schema="public", name="characters")
  * @ORM\EntityListeners({"App\Listeners\CharacterListener"})
+ * @Schema(type="object", title="Character")
  */
 class Character
 {
@@ -19,34 +22,40 @@ class Character
     private $id;
 
     /**
+     * @ORM\Column(type="string", name="unique_id")
+     * @Property(type="srting", example="c_humano")
+     */
+    private $uniqueId;
+
+    /**
      * @ORM\Column(type="string", length=100)
+     * @Property(type="string", example="Humano")
      */
     private $name;
 
     /**
      * @ORM\Column(type="integer", name="amount_life")
+     * @Property(type="integer", example="20")
      */
     private $amountLife;
 
     /**
      * @ORM\Column(type="integer", name="amount_strength")
+     * @Property(type="integer", example="2")
      */
     private $amountStrength;
 
     /**
      * @ORM\Column(type="integer", name="amount_agility")
+     * @Property(type="integer", example="1")
      */
     private $amountAgility;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\CharacterWeapon", mappedBy="character", cascade={"persist", "remove"})
+     * @Property(property="weapon", ref="#/components/schemas/Weapon")
      */
     private $characterWeapon;
-
-    /**
-     * @ORM\Column(type="string", name="unique_id")
-     */
-    private $uniqueId;
 
     /**
      * @ORM\Column(type="integer", name="dice_faces")

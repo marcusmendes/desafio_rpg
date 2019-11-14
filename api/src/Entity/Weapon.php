@@ -5,11 +5,14 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use OpenApi\Annotations\Property;
+use OpenApi\Annotations\Schema;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\WeaponRepository")
  * @ORM\Table(schema="public", name="weapons")
  * @ORM\EntityListeners({"App\Listeners\WeaponListener"})
+ * @Schema(type="object", title="Weapon")
  */
 class Weapon
 {
@@ -21,22 +24,32 @@ class Weapon
     private $id;
 
     /**
+     * @ORM\Column(type="string", name="unique_id")
+     * @Property(type="string", example="w_clava_de_madeira")
+     */
+    private $uniqueId;
+
+    /**
      * @ORM\Column(type="string", length=100)
+     * @Property(type="string", example="Espada Longa")
      */
     private $name;
 
     /**
      * @ORM\Column(type="integer", name="amount_attack")
+     * @Property(type="integer", example="2")
      */
     private $amountAttack;
 
     /**
      * @ORM\Column(type="integer", name="amount_defense")
+     * @Property(type="integer", example="1")
      */
     private $amountDefense;
 
     /**
      * @ORM\Column(type="integer", name="amount_damage")
+     * @Property(type="integer", example="3")
      */
     private $amountDamage;
 
@@ -44,11 +57,6 @@ class Weapon
      * @ORM\OneToMany(targetEntity="App\Entity\CharacterWeapon", mappedBy="weapon")
      */
     private $weaponsCharacter;
-
-    /**
-     * @ORM\Column(type="string", name="unique_id")
-     */
-    private $uniqueId;
 
     public function __construct()
     {
