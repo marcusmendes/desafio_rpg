@@ -15,6 +15,7 @@ services:
       composer install --no-interaction &&
       bin/console doctrine:migrations:migrate &&
       bin/console doctrine:fixtures:load --purge-with-truncate &&
+      ./swagger &&
       service php7.2-fpm start &&
       nginx -g 'daemon off;'"
   

@@ -65,5 +65,7 @@ RUN git clone --branch ${default_branch} ${git_repository} /var/www/html/project
 # BUILD
 WORKDIR /var/www/html/project/api
 COPY ./.env /var/www/html/project/api
+COPY ./.env.test /var/www/html/project/api
+COPY ./phpunit.xml /var/www/html/project/api
 
 EXPOSE 8000
