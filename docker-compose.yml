@@ -12,7 +12,7 @@ services:
       - database
       - database_test
     command: bash -c "git pull &&
-      composer install --no-interaction --no-scripts &&
+      composer install --no-interaction &&
       bin/console doctrine:migrations:migrate &&
       bin/console doctrine:fixtures:load --purge-with-truncate &&
       service php7.2-fpm start &&

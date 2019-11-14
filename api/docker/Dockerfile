@@ -64,9 +64,6 @@ RUN git clone --branch ${default_branch} ${git_repository} /var/www/html/project
 
 # BUILD
 WORKDIR /var/www/html/project/api
-RUN mkdir /var/www/html/project/api/var
-RUN chmod -R 777 /var/www/html/project/api/var
 COPY ./.env /var/www/html/project/api
-RUN composer install --no-interaction --no-scripts
 
 EXPOSE 8000
