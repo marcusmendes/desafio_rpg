@@ -143,4 +143,21 @@ class TurnRound
 
         return $this;
     }
+
+    /**
+     * Transforma o objeto em array
+     *
+     * @return array
+     */
+    public function toArray(): array
+    {
+        return [
+            'round'              => $this->getRound()->toArray(),
+            'characterStriker'   => $this->getCharacterStriker()->toArray(),
+            'characterDefender'  => $this->getCharacterDefender()->toArray(),
+            'amountLifeStriker'  => $this->getAmountLifeStriker(),
+            'amountLifeDefender' => $this->getAmountLifeDefender(),
+            'damage'             => $this->getDamage(),
+        ];
+    }
 }

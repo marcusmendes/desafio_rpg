@@ -3,8 +3,6 @@
 namespace App\Listeners;
 
 use App\Exceptions\ApiValidationException;
-use Doctrine\ORM\ORMException;
-use Exception;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -44,7 +42,7 @@ class ApiExceptionSubscriber implements EventSubscriberInterface
     }
 
     /**
-     * Manipula todas as exececoes geradas pela aplicacao
+     * Manipula todas as execeções geradas pela aplicação
      *
      * @param ExceptionEvent $event
      * @return void

@@ -14,7 +14,7 @@ use Symfony\Component\Validator\Constraints\Positive;
 class TurnRequestValidation extends AbstractValidation
 {
     /**
-     * As regras de validacao
+     * As regras de validação
      *
      * @return Collection
      */

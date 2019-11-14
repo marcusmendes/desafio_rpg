@@ -13,7 +13,7 @@ use Symfony\Component\Validator\Validation;
 abstract class AbstractValidation
 {
     /**
-     * Valida os dados da requisicao
+     * Valida os dados da requisição
      *
      * @param array $content
      * @return void
@@ -30,7 +30,7 @@ abstract class AbstractValidation
     }
 
     /**
-     * As regras de validacao
+     * As regras de validação
      *
      * @return Collection
      */

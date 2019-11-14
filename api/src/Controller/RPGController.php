@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Exceptions\ApiException;
+use App\Exceptions\ApiValidationException;
 use App\Services\RPGService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -44,6 +45,7 @@ class RPGController extends AbstractController
      *
      * @param Request $request
      * @return JsonResponse
+     * @throws ApiValidationException
      */
     public function turn(Request $request): JsonResponse
     {

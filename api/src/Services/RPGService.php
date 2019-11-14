@@ -16,6 +16,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Class RPGService
+ *
  * @package App\Services
  */
 class RPGService
@@ -32,8 +33,9 @@ class RPGService
 
     /**
      * RPGService constructor.
+     *
      * @param EntityManagerInterface $entityManager
-     * @param TurnRequestValidation $requestValidation
+     * @param TurnRequestValidation  $requestValidation
      */
     public function __construct(EntityManagerInterface $entityManager, TurnRequestValidation $requestValidation)
     {
@@ -56,11 +58,11 @@ class RPGService
             $round = $this->createRound();
 
             return [
-                'round'         => $round->toArray(),
-                'characters'    => [
-                    'human'     => $human !== null ? $human->toArray() : [],
-                    'orc'       => $orc !== null ? $orc->toArray() : []
-                ]
+                'round'      => $round->toArray(),
+                'characters' => [
+                    'human' => $human !== null ? $human->toArray() : [],
+                    'orc'   => $orc !== null ? $orc->toArray() : [],
+                ],
             ];
 
         } catch (NonUniqueResultException $e) {
@@ -103,15 +105,10 @@ class RPGService
                     $characterDefender = $human;
                 }
 
-                $this->createTurnRound(TurnStep::INIATIVE, $roundId, $characterStriker, $characterDefender);
+                $turnRound = $this
+                    ->createTurnRound(TurnStep::INIATIVE, $roundId, $characterStriker, $characterDefender);
 
-                return [
-                    'step' => TurnStep::ATTACK,
-                    'character_striker'  => $characterStriker->toArray(),
-                    'character_defender' => $characterDefender->toArray()
-                ];
-
-                break;
+                return $this->resultTurn(TurnStep::ATTACK, $turnRound);
 
             case TurnStep::ATTACK:
                 $characterStriker = $this->getCharacter($content['turn']['striker_uniqueId']);
@@ -128,7 +125,7 @@ class RPGService
                     $characterDefender->setAmountLife($lifeDefender);
 
                     if ($lifeDefender > 0) {
-                        $this->createTurnRound(
+                        $turnRound = $this->createTurnRound(
                             TurnStep::ATTACK,
                             $roundId,
                             $characterStriker,
@@ -136,9 +133,9 @@ class RPGService
                             $damage
                         );
 
-                        return $this->resultTurn(TurnStep::INIATIVE, $characterStriker, $characterDefender);
+                        return $this->resultTurn(TurnStep::INIATIVE, $turnRound);
                     } else {
-                        $this->createTurnRound(
+                        $turnRound = $this->createTurnRound(
                             TurnStep::TURN_FINISH,
                             $roundId,
                             $characterStriker,
@@ -146,22 +143,24 @@ class RPGService
                             $damage
                         );
 
-                        return $this->resultTurn(TurnStep::TURN_FINISH, $characterStriker, $characterDefender);
+                        return $this->resultTurn(TurnStep::TURN_FINISH, $turnRound);
                     }
                 } else {
-                    $this->createTurnRound(TurnStep::ATTACK, $roundId, $characterStriker, $characterDefender, 0);
-                    return $this->resultTurn(TurnStep::INIATIVE, $characterStriker, $characterDefender);
+                    $turnRound = $this
+                        ->createTurnRound(TurnStep::ATTACK, $roundId, $characterStriker, $characterDefender, 0);
+
+                    return $this->resultTurn(TurnStep::INIATIVE, $turnRound);
                 }
-                break;
 
             default:
-                $this->createTurnRound(TurnStep::INIATIVE, $roundId);
-                return $this->resultTurn(TurnStep::INIATIVE);
+                $turnRound = $this->createTurnRound(TurnStep::INIATIVE, $roundId);
+
+                return $this->resultTurn(TurnStep::INIATIVE, $turnRound);
         }
     }
 
     /**
-     * Recupera os dados da requisicao
+     * Recupera os dados da requisição
      *
      * @param Request $request
      * @return array
@@ -182,9 +181,11 @@ class RPGService
         $characters = $this
             ->entityManager
             ->getRepository(Character::class)
-            ->findOneBy([
-                'uniqueId' => $uniqueId
-            ]);
+            ->findOneBy(
+                [
+                    'uniqueId' => $uniqueId,
+                ]
+            );
 
         return $characters;
     }
@@ -193,7 +194,6 @@ class RPGService
      * Salva a rodada no banco de dados
      *
      * @return Round
-     * @throws NonUniqueResultException
      */
     private function createRound(): Round
     {
@@ -205,7 +205,7 @@ class RPGService
         $roundNumber = $result !== null ? $result->getRoundNumber() + 1 : 1;
 
         $round = new Round();
-        $round->setName('Rodada ' . $roundNumber);
+        $round->setName('Rodada '.$roundNumber);
         $round->setRoundNumber($roundNumber);
 
         $this->entityManager->persist($round);
@@ -217,11 +217,11 @@ class RPGService
     /**
      * Salva o turno no banco de dados
      *
-     * @param string $type
-     * @param integer $roundId
+     * @param string         $type
+     * @param integer        $roundId
      * @param Character|null $characterStriker
      * @param Character|null $characterDefender
-     * @param integer|null $damage
+     * @param integer|null   $damage
      * @return TurnRound
      */
     private function createTurnRound(
@@ -252,7 +252,7 @@ class RPGService
     }
 
     /**
-     * Rola o dado para saber qual personagem comeca o ataque
+     * Rola o dado para saber qual personagem começa o ataque
      *
      * @param Character $human
      * @param Character $orc
@@ -276,20 +276,17 @@ class RPGService
     /**
      * Cria o resultado gerado no turno
      *
-     * @param string $turnStep
-     * @param Character|null $characterStriker
-     * @param Character|null $characterDefender
+     * @param string    $turnStep
+     * @param TurnRound $turnRound
      * @return array
      */
     private function resultTurn(
         string $turnStep,
-        ?Character $characterStriker = null,
-        ?Character $characterDefender = null
+        TurnRound $turnRound
     ): array {
         return [
-            'step' => $turnStep,
-            'character_striker'  => $characterStriker !== null ? $characterStriker->toArray() : null,
-            'character_defender' => $characterDefender !== null ? $characterDefender->toArray() : null
+            'step'      => $turnStep,
+            'turnRound' => $turnRound->toArray(),
         ];
     }
 }
