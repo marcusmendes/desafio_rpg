@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -26,6 +28,16 @@ class Round
      * @ORM\Column(type="integer", name="round_number")
      */
     private $roundNumber;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\TurnRound", mappedBy="round")
+     */
+    private $roundTurns;
+
+    public function __construct()
+    {
+        $this->roundTurns = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -64,8 +76,40 @@ class Round
     public function toArray(): array
     {
         return [
+            'id' => $this->id,
             'name' => $this->name,
             'roundNumber' => $this->roundNumber
         ];
+    }
+
+    /**
+     * @return Collection|TurnRound[]
+     */
+    public function getRoundTurns(): Collection
+    {
+        return $this->roundTurns;
+    }
+
+    public function addRoundTurn(TurnRound $roundTurn): self
+    {
+        if (!$this->roundTurns->contains($roundTurn)) {
+            $this->roundTurns[] = $roundTurn;
+            $roundTurn->setRound($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRoundTurn(TurnRound $roundTurn): self
+    {
+        if ($this->roundTurns->contains($roundTurn)) {
+            $this->roundTurns->removeElement($roundTurn);
+            // set the owning side to null (unless already changed)
+            if ($roundTurn->getRound() === $this) {
+                $roundTurn->setRound(null);
+            }
+        }
+
+        return $this;
     }
 }

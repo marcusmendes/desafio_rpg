@@ -2,6 +2,7 @@
 
 namespace App\Listeners;
 
+use App\Exceptions\ApiValidationException;
 use Doctrine\ORM\ORMException;
 use Exception;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -52,15 +53,24 @@ class ApiExceptionSubscriber implements EventSubscriberInterface
     {
         $exception = $event->getException();
 
-        $response = new JsonResponse(
-            [
-                'error' => $exception->getMessage()
-            ],
-            Response::HTTP_INTERNAL_SERVER_ERROR
-        );
+        if ($exception instanceof ApiValidationException) {
+            $response = new JsonResponse(
+                ['errors' => $exception->getErrors()],
+                Response::HTTP_UNPROCESSABLE_ENTITY
+            );
 
-        $response->headers->set('Content-Type', 'application/json');
+            $response->headers->set('Content-Type', 'application/json');
 
-        $event->setResponse($response);
+            $event->setResponse($response);
+        } else {
+            $response = new JsonResponse(
+                ['error' => $exception->getMessage()],
+                Response::HTTP_INTERNAL_SERVER_ERROR
+            );
+
+            $response->headers->set('Content-Type', 'application/json');
+
+            $event->setResponse($response);
+        }
     }
 }

@@ -47,7 +47,8 @@ class CharacterFixtures extends Fixture
             ->setName('Humano')
             ->setAmountLife(12)
             ->setAmountAgility(2)
-            ->setAmountStrength(1);
+            ->setAmountStrength(1)
+            ->setDiceFaces(6);
 
         $characterWeaponHuman = new CharacterWeapon();
         $characterWeaponHuman
@@ -80,7 +81,8 @@ class CharacterFixtures extends Fixture
             ->setName('Orc')
             ->setAmountLife(20)
             ->setAmountAgility(0)
-            ->setAmountStrength(2);
+            ->setAmountStrength(2)
+            ->setDiceFaces(8);
 
         $characterWeaponOrc = new CharacterWeapon();
         $characterWeaponOrc
