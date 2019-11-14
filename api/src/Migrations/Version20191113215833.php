@@ -10,23 +10,22 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20191111234829 extends AbstractMigration
+final class Version20191113215833 extends AbstractMigration
 {
     public function getDescription() : string
     {
-        return 'Adicionar nova coluna na tabela characters';
+        return 'Adicionar campo dice_faces na tabela characters';
     }
 
     public function up(Schema $schema) : void
     {
         $table = $schema->getTable('characters');
-        $table->addColumn('unique_id', 'string', ['unique' => true]);
-        $table->addIndex(['unique_id']);
+        $table->addColumn('dice_faces', 'integer');
     }
 
     public function down(Schema $schema) : void
     {
         $table = $schema->getTable('characters');
-        $table->dropColumn('unique_id');
+        $table->dropColumn('dice_faces');
     }
 }

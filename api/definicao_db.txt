@@ -22,21 +22,12 @@ rounds:
  - name string not null
  - round_number integer not null
 
-turn:
- - id integer not null primary key
- - id_round integer not null
- - turn_number integer not null
-
-turn_characters:
- - id integer not null primary key
- - id_character integer not null
- - id_turn integer not null
-
 turn_rounds:
  - id integer not null primary key
- - id_turn integer not null
+ - id_round integer not null
  - id_character_striker integer not null
  - id_character_defender integer not null
- - type smallint not null (iniciativa, ataque, dano)
+ - type smallint not null (iniciativa, ataque)
+ - amount_life_striker integer
+ - amount_life_defender integer
  - damage double
- - amount_life integer

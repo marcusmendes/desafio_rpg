@@ -44,9 +44,14 @@ class Character
     private $characterWeapon;
 
     /**
-     * @ORM\Column(type="integer", name="unique_id")
+     * @ORM\Column(type="string", name="unique_id")
      */
     private $uniqueId;
+
+    /**
+     * @ORM\Column(type="integer", name="dice_faces")
+     */
+    private $diceFaces;
 
     public function getId(): ?int
     {
@@ -118,12 +123,12 @@ class Character
         return $this;
     }
 
-    public function getUniqueId(): ?int
+    public function getUniqueId(): ?string
     {
         return $this->uniqueId;
     }
 
-    public function setUniqueId(int $uniqueId): self
+    public function setUniqueId(string $uniqueId): self
     {
         $this->uniqueId = $uniqueId;
 
@@ -145,5 +150,17 @@ class Character
             'amountAgility'     => $this->amountAgility,
             'weapon'            => $this->getCharacterWeapon()->getWeapon()->toArray()
         ];
+    }
+
+    public function getDiceFaces(): ?int
+    {
+        return $this->diceFaces;
+    }
+
+    public function setDiceFaces(int $diceFaces): self
+    {
+        $this->diceFaces = $diceFaces;
+
+        return $this;
     }
 }
