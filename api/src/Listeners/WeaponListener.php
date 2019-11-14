@@ -20,7 +20,7 @@ class WeaponListener
      */
     public function prePersistHandler(Weapon $weapon, LifecycleEventArgs $event)
     {
-        $uniqueId = sprintf("w_%s", str_replace('', '_', strtolower($weapon->getName())));
+        $uniqueId = sprintf("w_%s", str_replace(' ', '_', strtolower($weapon->getName())));
         $weapon->setUniqueId($uniqueId);
     }
 }

@@ -37,7 +37,7 @@ class ApiValidationException extends Exception
     }
 
     /**
-     * Retorna os erros de validacao
+     * Retorna os erros de validação
      *
      * @return array
      */

@@ -5,10 +5,13 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use OpenApi\Annotations\Property;
+use OpenApi\Annotations\Schema;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\RoundRepository")
  * @ORM\Table(schema="public", name="rounds")
+ * @Schema(type="object", title="Round")
  */
 class Round
 {
@@ -16,16 +19,19 @@ class Round
      * @ORM\Id()
      * @ORM\GeneratedValue(strategy="AUTO")
      * @ORM\Column(type="integer")
+     * @Property(type="integer", example="1")
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Property(type="string", example="Rodada 1")
      */
     private $name;
 
     /**
      * @ORM\Column(type="integer", name="round_number")
+     * @Property(type="integer", example="1")
      */
     private $roundNumber;
 

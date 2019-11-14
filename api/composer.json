@@ -26,7 +26,8 @@
         "symfony/twig-bundle": "4.3.*",
         "symfony/validator": "4.3.*",
         "symfony/web-link": "4.3.*",
-        "symfony/yaml": "4.3.*"
+        "symfony/yaml": "4.3.*",
+        "zircote/swagger-php": "^3.0"
     },
     "require-dev": {
         "liip/test-fixtures-bundle": "^1.0.0",
@@ -37,7 +38,8 @@
         "symfony/phpunit-bridge": "^4.3",
         "symfony/profiler-pack": "*",
         "symfony/test-pack": "^1.0",
-        "symfony/web-server-bundle": "4.3.*"
+        "symfony/web-server-bundle": "4.3.*",
+        "ext-json": "*"
     },
     "config": {
         "preferred-install": {
