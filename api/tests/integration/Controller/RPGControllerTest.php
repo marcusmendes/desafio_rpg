@@ -125,22 +125,30 @@ class RPGControllerTest extends ApiTestCase
 
         $this->assertIsArray($content);
 
-        $this->assertArrayHasKey('step', $content);
-        $this->assertEquals(TurnStep::ATTACK, $content['step']);
+        $this->assertArrayHasKey('nextStep', $content);
+        $this->assertEquals(TurnStep::ATTACK, $content['nextStep']);
 
-        $this->assertArrayHasKey('turnRound', $content);
+        $this->assertArrayHasKey('strikerUniqueId', $content);
+        $this->assertArrayHasKey('defenderUniqueId', $content);
 
-        $turnRound = $content['turnRound'];
+        $this->assertArrayHasKey('winner', $content);
 
-        $this->assertArrayHasKey('characterStriker', $turnRound);
-        $this->assertArrayHasKey('uniqueId', $turnRound['characterStriker']);
+        $this->assertArrayHasKey('turnRounds', $content);
 
-        $this->assertArrayHasKey('characterDefender', $turnRound);
-        $this->assertArrayHasKey('uniqueId', $turnRound['characterDefender']);
+        $turnRounds = $content['turnRounds'];
 
-        $this->assertArrayHasKey('amountLifeStriker', $turnRound);
-        $this->assertArrayHasKey('amountLifeDefender', $turnRound);
-        $this->assertArrayHasKey('damage', $turnRound);
+        $this->assertIsArray($turnRounds);
+        $this->assertNotEmpty($turnRounds);
+
+        $this->assertArrayHasKey('characterStriker', $turnRounds[0]);
+        $this->assertArrayHasKey('uniqueId', $turnRounds[0]['characterStriker']);
+
+        $this->assertArrayHasKey('characterDefender', $turnRounds[0]);
+        $this->assertArrayHasKey('uniqueId', $turnRounds[0]['characterDefender']);
+
+        $this->assertArrayHasKey('amountLifeStriker', $turnRounds[0]);
+        $this->assertArrayHasKey('amountLifeDefender', $turnRounds[0]);
+        $this->assertArrayHasKey('damage', $turnRounds[0]);
     }
 
     public function testDeveRealizarOAtaqueEReiniciarAInciativa()
@@ -184,7 +192,7 @@ class RPGControllerTest extends ApiTestCase
 
         $this->assertIsArray($content);
 
-        $this->assertEquals(TurnStep::INIATIVE, $content['step']);
-        $this->assertGreaterThanOrEqual(0, $content['turnRound']['damage']);
+        $this->assertEquals(TurnStep::INIATIVE, $content['nextStep']);
+        $this->assertGreaterThanOrEqual(0, $content['turnRounds'][0]['damage']);
     }
 }

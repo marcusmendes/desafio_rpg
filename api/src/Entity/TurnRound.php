@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Enum\TurnStep;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -98,7 +99,19 @@ class TurnRound
 
     public function getType(): ?string
     {
-        return $this->type;
+        switch ($this->type) {
+            case TurnStep::INIATIVE:
+                return 'Iniciativa';
+
+            case TurnStep::ATTACK:
+                return 'Ataque';
+
+            case TurnStep::TURN_FINISH:
+                return 'Turno Finalizado';
+
+            default:
+                return $this->type;
+        }
     }
 
     public function setType(string $type): self
@@ -158,6 +171,7 @@ class TurnRound
             'amountLifeStriker'  => $this->getAmountLifeStriker(),
             'amountLifeDefender' => $this->getAmountLifeDefender(),
             'damage'             => $this->getDamage(),
+            'step'               => $this->getType()
         ];
     }
 }

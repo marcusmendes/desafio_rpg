@@ -194,6 +194,7 @@ class RPGService
      * Salva a rodada no banco de dados
      *
      * @return Round
+     * @throws NonUniqueResultException
      */
     private function createRound(): Round
     {
@@ -289,11 +290,18 @@ class RPGService
             ->getRepository(TurnRound::class)
             ->findBy(['round' => $turnRound->getRound()->getId()]);
 
+        $winner = [];
+
+        if ($turnStep === TurnStep::TURN_FINISH) {
+            $winner = $turnRound->getCharacterStriker();
+        }
+
         return [
-            'step'      => $turnStep,
-            'striker_uniqueId' => $turnRound->getCharacterStriker()->getUniqueId(),
-            'defender_uniqueId' => $turnRound->getCharacterDefender()->getUniqueId(),
-            'turnRounds' => array_map(function (TurnRound $turnRound) {
+            'nextStep'          => $turnStep,
+            'strikerUniqueId'  => $turnRound->getCharacterStriker()->getUniqueId(),
+            'defenderUniqueId' => $turnRound->getCharacterDefender()->getUniqueId(),
+            'winner'            => $winner,
+            'turnRounds'        => array_map(function (TurnRound $turnRound) {
                 return $turnRound->toArray();
             }, $turnRounds),
         ];
