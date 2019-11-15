@@ -12,10 +12,26 @@ services:
       - database
       - database_test
     command: bash -c "git pull &&
-      composer install --no-interaction --no-scripts &&
+      composer install --no-interaction &&
       bin/console doctrine:migrations:migrate &&
       bin/console doctrine:fixtures:load --purge-with-truncate &&
+      ./swagger.sh &&
       service php7.2-fpm start &&
+      nginx -g 'daemon off;'"
+
+  web:
+    build:
+      context: web/docker
+      args:
+        git_repository: git@github.com:marcusmendes/desafio_rpg.git
+        default_branch: develop
+    ports:
+      - 3333:80
+    depends_on: 
+      - api
+    command: bash -c "git pull &&
+      npm install &&
+      npm run build &&
       nginx -g 'daemon off;'"
   
   database:

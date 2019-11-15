@@ -13,6 +13,7 @@ RUN apt-get update \
     git \
     vim \
     nginx \
+    nginx-extras \
     php7.2 \
     php7.2-fpm \
     php7.2-bz2 \
@@ -64,9 +65,8 @@ RUN git clone --branch ${default_branch} ${git_repository} /var/www/html/project
 
 # BUILD
 WORKDIR /var/www/html/project/api
-RUN mkdir /var/www/html/project/api/var
-RUN chmod -R 777 /var/www/html/project/api/var
 COPY ./.env /var/www/html/project/api
-RUN composer install --no-interaction --no-scripts
+COPY ./.env.test /var/www/html/project/api
+COPY ./phpunit.xml /var/www/html/project/api
 
 EXPOSE 8000

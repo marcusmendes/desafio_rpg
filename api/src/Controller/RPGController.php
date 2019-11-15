@@ -149,6 +149,7 @@ class RPGController extends AbstractController
      * @param Request $request
      * @return JsonResponse
      * @throws ApiValidationException
+     * @throws ApiException
      */
     public function turn(Request $request): JsonResponse
     {

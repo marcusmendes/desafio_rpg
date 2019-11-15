@@ -52,7 +52,7 @@ class Character
     private $amountAgility;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\CharacterWeapon", mappedBy="character", cascade={"persist", "remove"})
+     * @ORM\OneToOne(targetEntity="App\Entity\CharacterWeapon", mappedBy="character")
      * @Property(property="weapon", ref="#/components/schemas/Weapon")
      */
     private $characterWeapon;

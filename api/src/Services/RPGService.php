@@ -76,6 +76,8 @@ class RPGService
      * @param Request $request
      * @return array
      * @throws ApiValidationException
+     * @throws ApiException
+     * @throws NonUniqueResultException
      */
     public function startTurn(Request $request)
     {
@@ -105,8 +107,20 @@ class RPGService
                     $characterDefender = $human;
                 }
 
+                $lastRound = $this->getLastTurnRound($roundId);
+
+                $amountLifeStriker = $this->getLastAmountLifeCharacter($characterStriker, $lastRound);
+                $amountLifeDefender = $this->getLastAmountLifeCharacter($characterDefender, $lastRound);
+
                 $turnRound = $this
-                    ->createTurnRound(TurnStep::INIATIVE, $roundId, $characterStriker, $characterDefender);
+                    ->createTurnRound(
+                        TurnStep::INIATIVE,
+                        $roundId,
+                        $characterStriker,
+                        $characterDefender,
+                        $amountLifeStriker,
+                        $amountLifeDefender
+                    );
 
                 return $this->resultTurn(TurnStep::ATTACK, $turnRound);
 
@@ -118,11 +132,15 @@ class RPGService
                 $attackStriker = $rpg->rollDiceAttack($characterStriker);
                 $defenseDefender = $rpg->rollDiceDefender($characterDefender);
 
+                $lastRound = $this->getLastTurnRound($roundId);
+
+                $amountLifeStriker = $this->getLastAmountLifeCharacter($characterStriker, $lastRound);
+                $amountLifeDefender = $this->getLastAmountLifeCharacter($characterDefender, $lastRound);
+
                 if ($attackStriker > $defenseDefender) {
                     $damage = $rpg->calculateDamage($characterStriker);
 
-                    $lifeDefender = $characterDefender->getAmountLife() - $damage;
-                    $characterDefender->setAmountLife($lifeDefender);
+                    $lifeDefender = $amountLifeDefender - $damage;
 
                     if ($lifeDefender > 0) {
                         $turnRound = $this->createTurnRound(
@@ -130,6 +148,8 @@ class RPGService
                             $roundId,
                             $characterStriker,
                             $characterDefender,
+                            $amountLifeStriker,
+                            $lifeDefender,
                             $damage
                         );
 
@@ -140,6 +160,8 @@ class RPGService
                             $roundId,
                             $characterStriker,
                             $characterDefender,
+                            $amountLifeStriker,
+                            $lifeDefender,
                             $damage
                         );
 
@@ -147,15 +169,21 @@ class RPGService
                     }
                 } else {
                     $turnRound = $this
-                        ->createTurnRound(TurnStep::ATTACK, $roundId, $characterStriker, $characterDefender, 0);
+                        ->createTurnRound(
+                            TurnStep::ATTACK,
+                            $roundId,
+                            $characterStriker,
+                            $characterDefender,
+                            $amountLifeStriker,
+                            $amountLifeDefender,
+                            0
+                        );
 
                     return $this->resultTurn(TurnStep::INIATIVE, $turnRound);
                 }
 
             default:
-                $turnRound = $this->createTurnRound(TurnStep::INIATIVE, $roundId);
-
-                return $this->resultTurn(TurnStep::INIATIVE, $turnRound);
+                throw new ApiException('O step: {'.$step.'} informado não exite');
         }
     }
 
@@ -191,9 +219,25 @@ class RPGService
     }
 
     /**
+     * Recupera os dados do último turno do round
+     *
+     * @param integer $idRound
+     * @return TurnRound|null
+     * @throws NonUniqueResultException
+     */
+    private function getLastTurnRound(int $idRound): ?TurnRound
+    {
+        return $this
+            ->entityManager
+            ->getRepository(TurnRound::class)
+            ->findLastTurnRoundWhereDamageNotNull($idRound);
+    }
+
+    /**
      * Salva a rodada no banco de dados
      *
      * @return Round
+     * @throws NonUniqueResultException
      */
     private function createRound(): Round
     {
@@ -217,11 +261,13 @@ class RPGService
     /**
      * Salva o turno no banco de dados
      *
-     * @param string         $type
-     * @param integer        $roundId
+     * @param string $type
+     * @param integer $roundId
      * @param Character|null $characterStriker
      * @param Character|null $characterDefender
-     * @param integer|null   $damage
+     * @param integer|null $amountLifeStriker
+     * @param integer|null $amountLifeDefender
+     * @param integer|null $damage
      * @return TurnRound
      */
     private function createTurnRound(
@@ -229,11 +275,11 @@ class RPGService
         int $roundId,
         ?Character $characterStriker = null,
         ?Character $characterDefender = null,
+        ?int $amountLifeStriker = null,
+        ?int $amountLifeDefender = null,
         ?int $damage = null
     ): TurnRound {
         $round = $this->entityManager->getRepository(Round::class)->find($roundId);
-        $amountLifeStriker = $characterStriker !== null ? $characterStriker->getAmountLife() : null;
-        $amountLifeDefender = $characterDefender !== null ? $characterDefender->getAmountLife() : null;
 
         $turnRound = new TurnRound();
         $turnRound
@@ -284,9 +330,45 @@ class RPGService
         string $turnStep,
         TurnRound $turnRound
     ): array {
+        $turnRounds = $this
+            ->entityManager
+            ->getRepository(TurnRound::class)
+            ->findBy(['round' => $turnRound->getRound()->getId()], ['id' => 'desc']);
+
+        $winner = null;
+
+        if ($turnStep === TurnStep::TURN_FINISH) {
+            $winner = $turnRound->getCharacterStriker()->toArray();
+        }
+
         return [
-            'step'      => $turnStep,
-            'turnRound' => $turnRound->toArray(),
+            'nextStep'          => $turnStep,
+            'strikerUniqueId'   => $turnRound->getCharacterStriker()->getUniqueId(),
+            'defenderUniqueId'  => $turnRound->getCharacterDefender()->getUniqueId(),
+            'winner'            => $winner,
+            'turnRounds'        => array_map(function (TurnRound $turnRound) {
+                return $turnRound->toArray();
+            }, $turnRounds),
         ];
+    }
+
+    /**
+     * Recupera o saldo da vida do personagem do último round
+     *
+     * @param Character $character
+     * @param TurnRound $lastRound
+     * @return integer
+     */
+    private function getLastAmountLifeCharacter(Character $character, ?TurnRound $lastRound): int
+    {
+        if ($lastRound === null) {
+            return $character->getAmountLife();
+        }
+
+        if ($character->getUniqueId() === $lastRound->getCharacterStriker()->getUniqueId()) {
+            return $lastRound->getAmountLifeStriker();
+        } else {
+            return $lastRound->getAmountLifeDefender();
+        }
     }
 }
