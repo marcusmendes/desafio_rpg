@@ -13,6 +13,7 @@ RUN apt-get update \
     git \
     vim \
     nginx \
+    nginx-extras \
     php7.2 \
     php7.2-fpm \
     php7.2-bz2 \
