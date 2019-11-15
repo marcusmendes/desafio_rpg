@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\TurnRound;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\ORM\NonUniqueResultException;
 
 /**
  * @method TurnRound|null find($id, $lockMode = null, $lockVersion = null)
@@ -19,32 +20,24 @@ class TurnRoundRepository extends ServiceEntityRepository
         parent::__construct($registry, TurnRound::class);
     }
 
-    // /**
-    //  * @return TurnRound[] Returns an array of TurnRound objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    /**
+     * Busca pelo último turno de um round específico
+     *
+     * @param integer $idRound
+     * @return TurnRound|null
+     * @throws NonUniqueResultException
+     */
+    public function findLastTurnRoundWhereDamageNotNull(int $idRound): ?TurnRound
     {
-        return $this->createQueryBuilder('t')
-            ->andWhere('t.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('t.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
+        $query = $this
+            ->createQueryBuilder('tr')
+            ->where('tr.round = :idRound')
+            ->andWhere('tr.damage IS NOT NULL')
+            ->orderBy('tr.id', 'DESC')
+            ->setMaxResults(1)
+            ->setParameter('idRound', $idRound)
+            ->getQuery();
 
-    /*
-    public function findOneBySomeField($value): ?TurnRound
-    {
-        return $this->createQueryBuilder('t')
-            ->andWhere('t.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+        return $query->getOneOrNullResult();
     }
-    */
 }
