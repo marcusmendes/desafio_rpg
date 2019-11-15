@@ -76,6 +76,7 @@ class RPGService
      * @param Request $request
      * @return array
      * @throws ApiValidationException
+     * @throws ApiException
      */
     public function startTurn(Request $request)
     {
@@ -153,9 +154,7 @@ class RPGService
                 }
 
             default:
-                $turnRound = $this->createTurnRound(TurnStep::INIATIVE, $roundId);
-
-                return $this->resultTurn(TurnStep::INIATIVE, $turnRound);
+                throw new ApiException('O step: {'.$step.'} informado não exite');
         }
     }
 

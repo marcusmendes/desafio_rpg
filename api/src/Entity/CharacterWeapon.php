@@ -18,13 +18,13 @@ class CharacterWeapon
     private $id;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Character", inversedBy="characterWeapon", cascade={"persist"})
+     * @ORM\OneToOne(targetEntity="App\Entity\Character", inversedBy="characterWeapon")
      * @ORM\JoinColumn(nullable=false, name="id_character")
      */
     private $character;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Weapon", inversedBy="weaponsCharacter", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="App\Entity\Weapon", inversedBy="weaponsCharacter")
      * @ORM\JoinColumn(nullable=false, name="id_weapon")
      */
     private $weapon;

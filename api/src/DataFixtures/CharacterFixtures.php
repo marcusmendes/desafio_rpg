@@ -55,9 +55,9 @@ class CharacterFixtures extends Fixture
             ->setCharacter($characterHuman)
             ->setWeapon($weaponHuman);
 
-        $characterHuman->setCharacterWeapon($characterWeaponHuman);
-
         $manager->persist($characterHuman);
+        $manager->persist($weaponHuman);
+        $manager->persist($characterWeaponHuman);
         $manager->flush();
     }
 
@@ -89,9 +89,9 @@ class CharacterFixtures extends Fixture
             ->setCharacter($characterOrc)
             ->setWeapon($weaponOrc);
 
-        $characterOrc->setCharacterWeapon($characterWeaponOrc);
-
         $manager->persist($characterOrc);
+        $manager->persist($weaponOrc);
+        $manager->persist($characterWeaponOrc);
         $manager->flush();
     }
 }

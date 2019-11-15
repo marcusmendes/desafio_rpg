@@ -5,7 +5,6 @@ namespace App\Tests\integration\Controller;
 use App\DataFixtures\CharacterFixtures;
 use App\Entity\Round;
 use App\Enum\TurnStep;
-use App\Exceptions\ApiValidationException;
 use App\Tests\ApiTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
