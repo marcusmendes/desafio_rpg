@@ -18,6 +18,19 @@ services:
       ./swagger.sh &&
       service php7.2-fpm start &&
       nginx -g 'daemon off;'"
+
+  web:
+    build:
+      context: web/docker
+      args:
+        git_repository: git@github.com:marcusmendes/desafio_rpg.git
+        default_branch: develop
+    ports:
+      - 3333:80
+    command: bash -c "git pull &&
+      npm install &&
+      npm run build &&
+      nginx -g 'daemon off;'"
   
   database:
     image: postgres:latest
