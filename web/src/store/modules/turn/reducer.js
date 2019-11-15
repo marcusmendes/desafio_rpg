@@ -21,6 +21,9 @@ export default function turnRound(state = INITIAL_STATE, action) {
         step: action.payload.turn.nextStep,
         turn: action.payload.turn,
       };
+    case '@round/FINISH_ROUND':
+      state = INITIAL_STATE;
+      return state;
     default:
       return state;
   }

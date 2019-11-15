@@ -2,10 +2,10 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import uuid from 'uuid/v1';
 
-import { Section, Characters, TurnRound } from './styles';
+import { Section, Characters, TurnRound, Winner } from './styles';
 
-import { startRequest } from '../../store/modules/round/actions';
-import { initiateTurnRequest } from '../../store/modules/turn/actions';
+import { startRequest, finishRound } from '~/store/modules/round/actions';
+import { initiateTurnRequest } from '~/store/modules/turn/actions';
 
 export default function Home() {
   const dispatch = useDispatch();
@@ -16,6 +16,17 @@ export default function Home() {
 
   const turn = useSelector(state => {
     return state.turn;
+  });
+
+  const winner = useSelector(state => {
+    if (!turn.hasTurnRound) {
+      return state.winner;
+    }
+
+    return {
+      ...state.winner,
+      totalTurns: turn.turn.turnRounds.length,
+    };
   });
 
   const turnRounds = useSelector(state => {
@@ -35,13 +46,15 @@ export default function Home() {
     dispatch(startRequest());
   }
 
+  function handleNewRound() {
+    dispatch(finishRound());
+  }
+
   function handleTurn(roundData, turnData) {
     const { nextStep } = turnData.turn;
 
     if (nextStep !== 'TURN_FINISH') {
       dispatch(initiateTurnRequest(nextStep, roundData, turnData.turn));
-    } else {
-      dispatch();
     }
   }
 
@@ -85,6 +98,29 @@ export default function Home() {
               </p>
             </div>
           </Characters>
+
+          <Winner>
+            {winner.hasWinner ? (
+              <>
+                <h3>
+                  <span>{winner.name}</span> é o vencendor da rodada{' '}
+                  {round.roundNumber} após {winner.totalTurns} turnos.
+                </h3>
+                <p>
+                  <button type="button" onClick={handleNewRound}>
+                    Nova Rodada
+                  </button>
+                </p>
+              </>
+            ) : (
+              <p>
+                <button type="button" onClick={() => handleTurn(round, turn)}>
+                  Jogar
+                </button>
+              </p>
+            )}
+          </Winner>
+
           {turn.hasTurnRound ? (
             <TurnRound>
               <thead>
@@ -111,11 +147,6 @@ export default function Home() {
           ) : (
             ''
           )}
-          <p>
-            <button type="button" onClick={() => handleTurn(round, turn)}>
-              Iniciar Turno
-            </button>
-          </p>
         </>
       )}
     </Section>

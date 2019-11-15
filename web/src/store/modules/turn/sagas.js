@@ -5,6 +5,7 @@ import { isEmpty } from '~/utils';
 
 import { initiateTurnSuccess } from './actions';
 import { startSuccess } from '../round/actions';
+import { winnerSuccess } from '../winner/actions';
 
 export function* initiateTurn({ payload }) {
   const { step, round, turn } = payload;
@@ -32,7 +33,7 @@ export function* initiateTurn({ payload }) {
   const response = yield call(api.post, 'turn', requestBody);
 
   const turnData = response.data;
-  const lastTurn = turnData.turnRounds[turnData.turnRounds.length - 1];
+  const lastTurn = turnData.turnRounds[0];
   const roundData = round;
 
   if (
@@ -41,8 +42,12 @@ export function* initiateTurn({ payload }) {
     roundData.characters.human.amountLife = lastTurn.amountLifeStriker;
     roundData.characters.orc.amountLife = lastTurn.amountLifeDefender;
   } else {
-    roundData.characters.orc = lastTurn.amountLifeStriker;
-    roundData.characters.human = lastTurn.amountLifeDefender;
+    roundData.characters.orc.amountLife = lastTurn.amountLifeStriker;
+    roundData.characters.human.amountLife = lastTurn.amountLifeDefender;
+  }
+
+  if (turnData.winner !== null) {
+    yield put(winnerSuccess(turnData.winner));
   }
 
   yield put(startSuccess(roundData));

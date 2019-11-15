@@ -107,8 +107,20 @@ class RPGService
                     $characterDefender = $human;
                 }
 
+                $lastRound = $this->getLastTurnRound($roundId);
+
+                $amountLifeStriker = $this->getLastAmountLifeCharacter($characterStriker, $lastRound);
+                $amountLifeDefender = $this->getLastAmountLifeCharacter($characterDefender, $lastRound);
+
                 $turnRound = $this
-                    ->createTurnRound(TurnStep::INIATIVE, $roundId, $characterStriker, $characterDefender);
+                    ->createTurnRound(
+                        TurnStep::INIATIVE,
+                        $roundId,
+                        $characterStriker,
+                        $characterDefender,
+                        $amountLifeStriker,
+                        $amountLifeDefender
+                    );
 
                 return $this->resultTurn(TurnStep::ATTACK, $turnRound);
 

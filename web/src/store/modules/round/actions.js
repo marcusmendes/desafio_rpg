@@ -12,3 +12,9 @@ export function startSuccess(roundData) {
     },
   };
 }
+
+export function finishRound() {
+  return {
+    type: '@round/FINISH_ROUND',
+  };
+}

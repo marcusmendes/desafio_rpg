@@ -6,7 +6,7 @@ export default reducers => {
     {
       key: 'rpg',
       storage,
-      whitelist: ['round', 'turn'],
+      whitelist: ['round', 'turn', 'winner'],
     },
     reducers
   );

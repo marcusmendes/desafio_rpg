@@ -2,9 +2,9 @@ import styled from 'styled-components';
 import { darken } from 'polished';
 
 export const Section = styled.section`
-  max-width: 100%;
+  max-width: 1024px;
   padding: 0;
-  margin-bottom: 15px;
+  margin: auto;
 
   > h2 {
     font-size: 26px;
@@ -61,16 +61,58 @@ export const Characters = styled.div`
 `;
 
 export const TurnRound = styled.table`
-  margin-top: 30px;
   width: 100%;
+  margin-top: 20px;
 
-  th {
+  > th {
     text-align: center;
     padding: 10px;
   }
 
-  td {
+  > tbody {
+    td {
+      text-align: center;
+      padding: 10px;
+    }
+  }
+`;
+
+export const Winner = styled.div`
+  width: 100%;
+  padding: 20px;
+  background: #f4efd3;
+
+  h3 {
+    font-size: 18px;
+    color: #da2d2d;
     text-align: center;
-    padding: 10px;
+
+    span {
+      font-size: 24px;
+      color: #10316b;
+    }
+  }
+
+  > p {
+    display: block;
+    text-align: center;
+    margin-top: 20px;
+
+    button {
+      width: 150px;
+      margin: 0;
+      height: 44px;
+      background: #3b9eff;
+      font-weight: bold;
+      color: #fff;
+      border: 0;
+      border-radius: 4px;
+      font-size: 16px;
+      transition: background 0.2s;
+
+      &:hover {
+        background: ${darken(0.03, '#3b9eff')};
+      }
+    }
   }
 `;
