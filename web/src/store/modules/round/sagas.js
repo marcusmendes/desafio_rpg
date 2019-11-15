@@ -5,9 +5,6 @@ import { startSuccess } from './actions';
 
 export function* startRound() {
   const response = yield call(api.get, 'start');
-
-  console.tron.debug(response);
-
   yield put(startSuccess(response.data));
 }
 

@@ -284,9 +284,18 @@ class RPGService
         string $turnStep,
         TurnRound $turnRound
     ): array {
+        $turnRounds = $this
+            ->entityManager
+            ->getRepository(TurnRound::class)
+            ->findBy(['round' => $turnRound->getRound()->getId()]);
+
         return [
             'step'      => $turnStep,
-            'turnRound' => $turnRound->toArray(),
+            'striker_uniqueId' => $turnRound->getCharacterStriker()->getUniqueId(),
+            'defender_uniqueId' => $turnRound->getCharacterDefender()->getUniqueId(),
+            'turnRounds' => array_map(function (TurnRound $turnRound) {
+                return $turnRound->toArray();
+            }, $turnRounds),
         ];
     }
 }
