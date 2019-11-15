@@ -1,7 +1,7 @@
 const INITIAL_STATE = {
   step: null,
   round: {},
-  turnRound: {},
+  turn: {},
   hasTurnRound: false,
 };
 
@@ -10,16 +10,16 @@ export default function turnRound(state = INITIAL_STATE, action) {
     case '@turn/INITIATE_REQUEST':
       return {
         ...state,
-        step: action.payload.step,
+        step: action.payload.step || null,
         round: action.payload.round,
-        turnRound: action.payload.turnRound,
+        turn: action.payload.turn,
       };
     case '@turn/INITIATE_SUCCESS':
       return {
         ...state,
         hasTurnRound: true,
-        step: action.payload.step,
-        turnRound: action.payload.turnRound,
+        step: action.payload.turn.nextStep,
+        turn: action.payload.turn,
       };
     default:
       return state;

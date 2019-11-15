@@ -17,10 +17,11 @@ export const Section = styled.section`
   > p {
     display: block;
     text-align: center;
+    padding: 10px;
 
     button {
       width: 150px;
-      margin: 5px 0 0;
+      margin: 0;
       height: 44px;
       background: #3b9eff;
       font-weight: bold;
@@ -62,4 +63,14 @@ export const Characters = styled.div`
 export const TurnRound = styled.table`
   margin-top: 30px;
   width: 100%;
+
+  th {
+    text-align: center;
+    padding: 10px;
+  }
+
+  td {
+    text-align: center;
+    padding: 10px;
+  }
 `;

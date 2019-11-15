@@ -1,20 +1,20 @@
-export function initiateTurnRequest(step, round, turnRound) {
+export function initiateTurnRequest(step, round, turn) {
   return {
     type: '@turn/INITIATE_REQUEST',
     payload: {
       step,
       round,
-      turnRound,
+      turn,
     },
   };
 }
 
-export function initiateTurnSuccess(step, turnRound) {
+export function initiateTurnSuccess(step, turn) {
   return {
     type: '@turn/INITIATE_SUCCESS',
     payload: {
       step,
-      turnRound,
+      turn,
     },
   };
 }

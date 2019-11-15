@@ -4,10 +4,10 @@ import api from '~/services/api';
 import { isEmpty } from '~/utils';
 
 import { initiateTurnSuccess } from './actions';
+import { startSuccess } from '../round/actions';
 
 export function* initiateTurn({ payload }) {
-  console.tron.debug(payload);
-  const { step, round, turnRound } = payload;
+  const { step, round, turn } = payload;
 
   const requestBody = {
     round: {
@@ -24,20 +24,29 @@ export function* initiateTurn({ payload }) {
     },
     turn: {
       step: step || 'INIATIVE',
-      striker_uniqueId: !isEmpty(turnRound)
-        ? turnRound.characterStriker.uniqueId
-        : null,
-      defender_uniqueId: !isEmpty(turnRound)
-        ? turnRound.characterDefender.uniqueId
-        : null,
+      striker_uniqueId: !isEmpty(turn) ? turn.strikerUniqueId : null,
+      defender_uniqueId: !isEmpty(turn) ? turn.defenderUniqueId : null,
     },
   };
 
   const response = yield call(api.post, 'turn', requestBody);
 
-  const { step: nextStep, turnRound: turnRoundData } = response.data;
+  const turnData = response.data;
+  const lastTurn = turnData.turnRounds[turnData.turnRounds.length - 1];
+  const roundData = round;
 
-  yield put(initiateTurnSuccess(nextStep, turnRoundData));
+  if (
+    roundData.characters.human.uniqueId === lastTurn.characterStriker.uniqueId
+  ) {
+    roundData.characters.human.amountLife = lastTurn.amountLifeStriker;
+    roundData.characters.orc.amountLife = lastTurn.amountLifeDefender;
+  } else {
+    roundData.characters.orc = lastTurn.amountLifeStriker;
+    roundData.characters.human = lastTurn.amountLifeDefender;
+  }
+
+  yield put(startSuccess(roundData));
+  yield put(initiateTurnSuccess(turnData.nextStep, turnData));
 }
 
 export default all([takeLatest('@turn/INITIATE_REQUEST', initiateTurn)]);

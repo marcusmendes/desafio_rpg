@@ -1,17 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import uuid from 'uuid/v1';
 
 import { Section, Characters, TurnRound } from './styles';
 
 import { startRequest } from '../../store/modules/round/actions';
 import { initiateTurnRequest } from '../../store/modules/turn/actions';
 
-import { isEmpty } from '~/utils';
-
 export default function Home() {
   const dispatch = useDispatch();
-
-  const [turns, setTurns] = useState([]);
 
   const round = useSelector(state => {
     return state.round;
@@ -21,18 +18,31 @@ export default function Home() {
     return state.turn;
   });
 
-  useEffect(() => {
-    if (!isEmpty(turn.turnRound)) {
-      setTurns([turn.turnRound]);
+  const turnRounds = useSelector(state => {
+    const { turn: turnData, hasTurnRound } = state.turn;
+
+    if (!hasTurnRound) {
+      return [];
     }
-  }, [turn.turnRound]);
+
+    return turnData.turnRounds.map(turnRound => ({
+      ...turnRound,
+      uuid: uuid(),
+    }));
+  });
 
   function handleStartRound() {
     dispatch(startRequest());
   }
 
   function handleTurn(roundData, turnData) {
-    dispatch(initiateTurnRequest(turnData.step, roundData, turnData.turnRound));
+    const { nextStep } = turnData.turn;
+
+    if (nextStep !== 'TURN_FINISH') {
+      dispatch(initiateTurnRequest(nextStep, roundData, turnData.turn));
+    } else {
+      dispatch();
+    }
   }
 
   return (
@@ -75,44 +85,37 @@ export default function Home() {
               </p>
             </div>
           </Characters>
-          {!turn.hasTurnRound ? (
-            <p>
-              <button type="button" onClick={() => handleTurn(round, turn)}>
-                Iniciar Turno
-              </button>
-            </p>
-          ) : (
-            <>
-              <TurnRound>
-                <thead>
-                  <tr>
-                    <th>Atacante</th>
-                    <th>Qtd. Vida</th>
-                    <th>Defensor</th>
-                    <th>Qtd. Vida</th>
-                    <th>Dano Sofrido</th>
+          {turn.hasTurnRound ? (
+            <TurnRound>
+              <thead>
+                <tr>
+                  <th>Atacante</th>
+                  <th>Defensor</th>
+                  <th>Dano Sofrido</th>
+                  <th>Turno</th>
+                </tr>
+              </thead>
+              <tbody>
+                {turnRounds.map(turnRound => (
+                  <tr key={turnRound.uuid}>
+                    <td>{turnRound.characterStriker.name}</td>
+                    <td>{turnRound.characterDefender.name}</td>
+                    <td>
+                      {turnRound.damage !== null ? turnRound.damage : '-'}
+                    </td>
+                    <td>{turnRound.step}</td>
                   </tr>
-                </thead>
-                <tbody>
-                  {console.tron.debug(turns)}
-                  {turns.map(turnRound => (
-                    <tr key={turnRound.round.id}>
-                      <td>{turnRound.characterStriker.name}</td>
-                      <td>{turnRound.characterStriker.amountLife}</td>
-                      <td>{turnRound.characterDefender.name}</td>
-                      <td>{turnRound.characterDefender.amountLife}</td>
-                      <td>{turnRound.damage || '-'}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </TurnRound>
-              <p>
-                <button type="button" onClick={() => handleTurn(round, turn)}>
-                  Próximo Turno
-                </button>
-              </p>
-            </>
+                ))}
+              </tbody>
+            </TurnRound>
+          ) : (
+            ''
           )}
+          <p>
+            <button type="button" onClick={() => handleTurn(round, turn)}>
+              Iniciar Turno
+            </button>
+          </p>
         </>
       )}
     </Section>
