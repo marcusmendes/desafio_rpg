@@ -68,5 +68,6 @@ WORKDIR /var/www/html/project/api
 COPY ./.env /var/www/html/project/api
 COPY ./.env.test /var/www/html/project/api
 COPY ./phpunit.xml /var/www/html/project/api
+RUN composer install --no-interaction
 
 EXPOSE 8000
