@@ -5,7 +5,7 @@ services:
       context: api/docker
       args: 
         git_repository: git@github.com:marcusmendes/desafio_rpg.git
-        default_branch: develop
+        default_branch: master
     ports:
       - 8000:80
     depends_on: 
@@ -24,7 +24,7 @@ services:
       context: web/docker
       args:
         git_repository: git@github.com:marcusmendes/desafio_rpg.git
-        default_branch: develop
+        default_branch: master
     ports:
       - 3333:80
     depends_on: 
