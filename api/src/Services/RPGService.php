@@ -290,7 +290,7 @@ class RPGService
             ->getRepository(TurnRound::class)
             ->findBy(['round' => $turnRound->getRound()->getId()]);
 
-        $winner = [];
+        $winner = null;
 
         if ($turnStep === TurnStep::TURN_FINISH) {
             $winner = $turnRound->getCharacterStriker();
