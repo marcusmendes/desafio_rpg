@@ -35,5 +35,6 @@ RUN git clone --branch ${default_branch} ${git_repository} /var/www/html/project
 
 # BUILD
 WORKDIR /var/www/html/project/web
+RUN npm install && npm run build
 
 EXPOSE 80
